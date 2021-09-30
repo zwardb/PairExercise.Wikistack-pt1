@@ -3,6 +3,8 @@ const morgan = require('morgan');
 const index = require('./views/index');
 const layout = require('./views/layout');
 const { db } = require('./models');
+const wikiRouter = require('./routes/wiki');
+const userRouter = require('./routes/users');
 
 const app = express();
 
@@ -17,8 +19,12 @@ app.use(express.static(__dirname + '/public'));
 app.use(express.json());
 app.use(express.urlencoded({extended: false}));
 
+app.use('/wiki',wikiRouter);
+app.use('/users',userRouter);
+
 app.get('/', (req,res)=> {
-  res.send(layout(''));
+  // res.send(layout(''));
+  res.redirect('/wiki');
 })
 const PORT = '3000';
 
@@ -35,5 +41,3 @@ async function init() {
 }
 
 init();
-
-
