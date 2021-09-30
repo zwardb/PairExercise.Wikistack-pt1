@@ -3,6 +3,8 @@ const wikiRouter = express.Router();
 const {db,Page,User} = require('../models/index.js');
 const index = require('../views/index');
 
+
+
 wikiRouter.get('/', async (req,res,next)=> {
   const allPages = await Page.findAll();
   console.log(allPages);
@@ -10,13 +12,17 @@ wikiRouter.get('/', async (req,res,next)=> {
 })
 
 wikiRouter.post('/',async (req,res,next)=>{
+  try {
+    const page = await Page.create({
+      title: req.body.title,
+      content: req.body.content,
+      status: req.body.status
+    })
 
-  // const newPage = await Page.create({
-  //   title: 'abc',
-  //   slug: 'http://foo.com',
-  //   content: 'ajdklffdsfd'
-  // });
-  res.redirect('/wiki');
+    res.redirect('/');
+  } catch (error) {
+    next(error)
+  }
 })
 
 wikiRouter.get('/add',async (req,res,next)=> {
