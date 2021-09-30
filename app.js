@@ -2,9 +2,14 @@ const express = require('express');
 const morgan = require('morgan');
 const index = require('./views/index');
 const layout = require('./views/layout');
+const { db } = require('./models');
 
 const app = express();
 
+db.authenticate()
+  .then(() => {
+    console.log('connected to the database')
+  })
 
 app.use(morgan('dev'));
 
@@ -17,6 +22,18 @@ app.get('/', (req,res)=> {
 })
 const PORT = '3000';
 
-app.listen(PORT, ()=> {
-  console.log(`server on ${PORT}`);
-})
+async function init() {
+  try {
+  await db.sync({force: false});
+
+  app.listen(PORT, ()=> {
+    console.log(`server on ${PORT}`);
+  })
+  } catch (err) {
+    console.log('error in init');
+  }
+}
+
+init();
+
+
